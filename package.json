@@ -1,0 +1,57 @@
+{
+  "name": "codigma-mcp-server",
+  "version": "1.0.0",
+  "description": "Server for Codigma MCP - A service for converting Figma designs to code",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "lint": "eslint . --ext .ts",
+    "test": "jest",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "mcp", 
+    "figmatocode", 
+    "figma to code", 
+    "figma to html", 
+    "design to code", 
+    "codigma"
+  ],
+  "author": {
+    "name": "Mehmet Alp",
+    "email": "mehmet.alp@rastmobile.com",
+    "url": "https://www.rastmobile.com"
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rastmob/codigma-mcp-server"
+  },
+  "homepage": "https://github.com/rastmob/codigma-mcp-server#readme",
+  "bugs": {
+    "url": "https://github.com/rastmob/codigma-mcp-server/issues"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.9.36",
+    "@types/express": "^5.0.1",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^22.15.2",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "rimraf": "^5.0.5",
+    "ts-jest": "^29.1.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
