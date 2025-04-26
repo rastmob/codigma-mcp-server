@@ -10,11 +10,11 @@ You just paste your Figma link, and Codigma.io does the rest!
 
 ## 🔄 What You Can Do
 
-- ✨ Fetch Figma public file data.
-- ✨ Convert Figma designs into structured Codigma Models.
-- ✨ Generate clean, semantic HTML and CSS code.
-- ✨ Optionally generate TailwindCSS class-based HTML.
-- ✨ Support for responsive design, fonts, borders, shadows, and gradients.
+- Fetch Figma public file data.
+- Convert Figma designs into structured Codigma Models.
+- Generate clean, semantic HTML and CSS code.
+- Optionally generate TailwindCSS class-based HTML.
+- Support for responsive design, fonts, borders, shadows, and gradients.
 
 ---
 

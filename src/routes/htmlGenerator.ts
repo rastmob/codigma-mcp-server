@@ -1,11 +1,11 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { CodigmaModel } from '../models/CodigmaModel';
 
 const router = express.Router();
 
 // Recursive HTML Generator Function
 const generateHTML = (model: CodigmaModel): string => {
-  const tag = model.type === 'TEXT' ? 'p' : 'div'; 
+  const tag = model.type === 'TEXT' ? 'p' : 'div'; // Şimdilik TEXT ise <p> yapıyoruz
   const childrenHTML = model.children.map(generateHTML).join('');
   
   const content = model.content || '';
@@ -14,11 +14,12 @@ const generateHTML = (model: CodigmaModel): string => {
 };
 
 // Endpoint
-router.post('/generate-html', (req, res) => {
+router.post('/generate-html', (req: Request, res: Response): void => {
   const codigmaModel = req.body.codigmaModel as CodigmaModel;
 
   if (!codigmaModel) {
-    return res.status(400).json({ error: 'codigmaModel is required' });
+    res.status(400).json({ error: 'codigmaModel is required' });
+    return;
   }
 
   const html = generateHTML(codigmaModel);
