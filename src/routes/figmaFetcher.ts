@@ -1,13 +1,11 @@
-import express from 'express';
+import express, { Request, Response, RequestHandler } from 'express';
 import axios from 'axios';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-
 const router = express.Router();
 
-// Get token from environment variables
 const FIGMA_PERSONAL_ACCESS_TOKEN = process.env.FIGMA_PERSONAL_ACCESS_TOKEN;
 
 // Check if token exists
@@ -20,17 +18,20 @@ const extractFileKey = (figmaUrl: string): string | null => {
   return match ? match[1] : null;
 };
 
-router.post('/fetch-figma-data', async (req, res) => {
+// Define the handler with proper RequestHandler type
+const fetchFigmaDataHandler: RequestHandler = async (req, res) => {
   const { figmaUrl } = req.body;
 
   if (!figmaUrl) {
-    return res.status(400).json({ error: 'figmaUrl is required' });
+    res.status(400).json({ error: 'figmaUrl is required' });
+    return;
   }
 
   const fileKey = extractFileKey(figmaUrl);
 
   if (!fileKey) {
-    return res.status(400).json({ error: 'Invalid Figma URL' });
+    res.status(400).json({ error: 'Invalid Figma URL' });
+    return;
   }
 
   try {
@@ -46,6 +47,9 @@ router.post('/fetch-figma-data', async (req, res) => {
     console.error(error.response?.data || error.message);
     res.status(500).json({ error: 'Failed to fetch Figma data' });
   }
-});
+};
+
+// Use the properly typed handler
+router.post('/fetch-figma-data', fetchFigmaDataHandler);
 
 export default router;
