@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import axios from 'axios';
 import dotenv from 'dotenv';
 
@@ -62,58 +62,61 @@ const generateCSS = (model: CodigmaModel): string => {
 };
 
 // Main Pipeline
-router.post('/figma-to-bundle', async (req, res) => {
-  const { figmaUrl } = req.body;
+router.post('/figma-to-bundle', async (req: Request, res: Response): Promise<void> => {
+        const { figmaUrl } = req.body;
 
-  if (!figmaUrl) {
-    return res.status(400).json({ error: 'figmaUrl is required' });
-  }
+        if (!figmaUrl) {
+            res.status(400).json({ error: 'figmaUrl is required' });
+            return;
+        }
 
-  const fileKey = extractFileKey(figmaUrl);
+        const fileKey = extractFileKey(figmaUrl);
 
-  if (!fileKey) {
-    return res.status(400).json({ error: 'Invalid Figma URL' });
-  }
+        if (!fileKey) {
+            res.status(400).json({ error: 'Invalid Figma URL' });
+            return;
+        }
 
-  try {
-    const response = await axios.get(`https://api.figma.com/v1/files/${fileKey}`, {
-      headers: {
-        'X-Figma-Token': FIGMA_PERSONAL_ACCESS_TOKEN,
-      },
+        try {
+            const response = await axios.get(`https://api.figma.com/v1/files/${fileKey}`, {
+                headers: {
+                    'X-Figma-Token': FIGMA_PERSONAL_ACCESS_TOKEN,
+                },
+            });
+
+            const figmaData = response.data as {
+                document: {
+                    children: Array<{
+                        children: Array<any>;
+                    }>;
+                };
+            };
+
+            // Örnek olarak ilk Page'in ilk Frame'ini alıyoruz (daha sonra seçilebilir yaparız)
+            const firstNode = figmaData.document.children[0]?.children[0];
+
+            if (!firstNode) {
+                res.status(400).json({ error: 'No valid node found in Figma file.' });
+                return;
+            }
+
+            // Mapping
+            const codigmaModel = mapFigmaNodeToCodigmaModel(firstNode);
+
+            // HTML + CSS üretimi
+            const html = generateHTML(codigmaModel);
+            const css = generateCSS(codigmaModel);
+            const bundle = `<style>\n${css}\n</style>\n\n${html}`;
+
+            res.json({
+                codigmaModel,
+                bundle,
+            });
+
+        } catch (error: any) {
+            console.error(error.response?.data || error.message);
+            res.status(500).json({ error: 'Failed to process Figma file' });
+        }
     });
-
-    const figmaData = response.data as {
-      document: {
-        children: Array<{
-          children: Array<any>;
-        }>;
-      };
-    };
-
-    // Örnek olarak ilk Page'in ilk Frame'ini alıyoruz (daha sonra seçilebilir yaparız)
-    const firstNode = figmaData.document.children[0]?.children[0];
-
-    if (!firstNode) {
-      return res.status(400).json({ error: 'No valid node found in Figma file.' });
-    }
-
-    // Mapping
-    const codigmaModel = mapFigmaNodeToCodigmaModel(firstNode);
-
-    // HTML + CSS üretimi
-    const html = generateHTML(codigmaModel);
-    const css = generateCSS(codigmaModel);
-    const bundle = `<style>\n${css}\n</style>\n\n${html}`;
-
-    res.json({
-      codigmaModel,
-      bundle,
-    });
-
-  } catch (error: any) {
-    console.error(error.response?.data || error.message);
-    res.status(500).json({ error: 'Failed to process Figma file' });
-  }
-});
 
 export default router;
