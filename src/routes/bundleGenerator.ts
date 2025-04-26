@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import express from 'express';
 import { CodigmaModel } from '../models/CodigmaModel';
 
 // HTML Generator (aynısını kullanıyoruz)
@@ -30,10 +30,10 @@ const generateCSS = (model: CodigmaModel): string => {
   return css + childrenCSS;
 };
 
-const router = Router();
+const router = express.Router();
 
 // Endpoint
-router.post('/generate-bundle', (req: Request, res: Response) => {
+router.post('/generate-bundle', (req, res) => {
   const codigmaModel = req.body.codigmaModel as CodigmaModel;
 
   if (!codigmaModel) {

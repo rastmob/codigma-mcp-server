@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { CodigmaModel } from '../models/CodigmaModel';
 
 const router = express.Router();
@@ -26,7 +26,7 @@ const generateCSS = (model: CodigmaModel): string => {
 };
 
 // Endpoint
-router.post('/generate-css', (req, res) => {
+router.post('/generate-css', (req: Request, res: Response) => {
   const codigmaModel = req.body.codigmaModel as CodigmaModel;
 
   if (!codigmaModel) {
